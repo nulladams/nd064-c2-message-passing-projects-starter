@@ -2,6 +2,11 @@
 # vi: set ft=ruby :
 default_box = "generic/opensuse15"
 
+#default_box = "roboxes/opensuse15"
+#default_box = "opensuse/Leap-15.3.x86_64"
+# config.vm.box = "roboxes/opensuse15"
+# config.vm.synced_folder "./", "/vagrant", type: "virtualbox", create: true
+
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
@@ -16,24 +21,29 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "master" do |master|
     master.vm.box = default_box
-    master.vm.hostname = "master"
-    master.vm.network 'private_network', ip: "192.168.0.200",  virtualbox__intnet: true
+    # master.vm.synced_folder "./", "/vagrant", type: "virtualbox", create: true
+    master.vm.hostname = "master8"
+    master.vm.network 'private_network', ip: "192.168.56.5",  virtualbox__intnet: true
     master.vm.network "forwarded_port", guest: 22, host: 2222, id: "ssh", disabled: true
     master.vm.network "forwarded_port", guest: 22, host: 2000 # Master Node SSH
-    master.vm.network "forwarded_port", guest: 6443, host: 6443 # API Access
+    master.vm.network "forwarded_port", guest: 6444, host: 6444 # API Access
     for p in 30000..30100 # expose NodePort IP's
       master.vm.network "forwarded_port", guest: p, host: p, protocol: "tcp"
       end
     master.vm.provider "virtualbox" do |v|
       v.memory = "3072"
-      v.name = "master"
+      v.name = "master8"
+      #v.customize ["modifyvm", :id, "--ioapic", "on"]
       end
     master.vm.provision "shell", inline: <<-SHELL
       sudo zypper refresh
       sudo zypper --non-interactive install bzip2
       sudo zypper --non-interactive install etcd
       sudo zypper --non-interactive install apparmor-parser
-      curl -sfL https://get.k3s.io | sh -
+      #curl -sfL https://get.k3s.io | sh -
+      #curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.19.3+k3s1 K3S_KUBECONFIG_MODE="644" sh -
+      curl -sfL https://get.k3s.io | sh -s - --https-listen-port=6444
+      sudo zypper --non-interactive install iptables
     SHELL
   end
 
