@@ -33,7 +33,7 @@ spec:
       containers:
       - image: udacity/nd064-udaconnect-api:latest
         name: udaconnect-api
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         env:
         - name: DB_USERNAME
           valueFrom:
@@ -60,4 +60,4 @@ spec:
             configMapKeyRef:
               name: db-env
               key: DB_PORT
-      restartPolicy: Always
+      #restartPolicy: Always

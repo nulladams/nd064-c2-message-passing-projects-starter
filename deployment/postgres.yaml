@@ -1,14 +1,14 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: postgres-volume
+  name: udaconnect-postgres-volume
   labels:
     type: local
     app: postgres
 spec:
   storageClassName: manual
   capacity:
-    storage: 256Mi
+    storage: 260Mi
   accessModes:
     - ReadWriteMany
   hostPath:
@@ -17,7 +17,7 @@ spec:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: postgres-pv-claim
+  name: udaconnect-postgres-pv-claim
   labels:
     app: postgres
 spec:
@@ -26,7 +26,7 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: 256Mi
+      storage: 260Mi
 ---
 apiVersion: v1
 kind: Service
@@ -58,7 +58,7 @@ spec:
       containers:
         - name: postgres
           image: postgis/postgis:12-2.5-alpine
-          imagePullPolicy: "IfNotPresent"
+          imagePullPolicy: "Always"
           ports:
             - containerPort: 5432
           env:
@@ -79,8 +79,8 @@ spec:
                 key: DB_NAME
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
-              name: postgresdb
+              name: udaconnect-postgresdb
       volumes:
-        - name: postgresdb
+        - name: udaconnect-postgresdb
           persistentVolumeClaim:
-            claimName: postgres-pv-claim
+            claimName: udaconnect-postgres-pv-claim

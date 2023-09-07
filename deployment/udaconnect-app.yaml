@@ -33,7 +33,7 @@ spec:
       containers:
       - image: udacity/nd064-udaconnect-app:latest
         name: udaconnect-app
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         resources:
           requests:
             memory: "128Mi"
@@ -41,4 +41,4 @@ spec:
           limits:
             memory: "256Mi"
             cpu: "256m"
-      restartPolicy: Always
+      #restartPolicy: Always

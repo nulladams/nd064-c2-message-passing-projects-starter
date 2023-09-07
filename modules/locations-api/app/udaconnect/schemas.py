@@ -9,7 +9,10 @@ class LocationSchema(Schema):
     person_id = fields.Integer()
     longitude = fields.String(attribute="longitude")
     latitude = fields.String(attribute="latitude")
-    creation_time = fields.DateTime()
+    creation_time = fields.DateTime(
+        default=lambda: datetime.utcnow(),
+        missing=lambda: datetime.utcnow(),
+    )
 
     class Meta:
         model = Location
